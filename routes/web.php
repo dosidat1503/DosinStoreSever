@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,5 @@ Route::get('/', function () {
 Route::get('/test2', function () {
     return view('test2');
 });
+Route::get('getInfoAtStartLoadingHome', [HomeController::class, 'getInfoAtStartLoadingHome']);
+
