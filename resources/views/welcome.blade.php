@@ -16,6 +16,7 @@
         </style>
     </head>
     <body class="antialiased">
-         <div>test</div>
+        <div id="react-app"></div>
+        <script src="{{ asset('js/react.js') }}"></script>
     </body>
 </html>
