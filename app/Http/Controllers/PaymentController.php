@@ -175,7 +175,7 @@ class PaymentController extends Controller
                 $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
                 $vnp_Returnurl = "http://localhost:3000/paymentResult";
                 $vnp_TmnCode = "NCH1W7SL";//Mã website tại VNPAY 
-                $vnp_HashSecret = "TMINKHSYJSMHVKASBDQYUDZXMHHAEOGL"; //Chuỗi bí mật
+                $vnp_HashSecret = "L4MNB0O55ENB6LWCOKW852OWZSWEF3G0"; //Chuỗi bí mật
     
                 $vnp_TxnRef = $madh[0]->MADH; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
                 $vnp_OrderInfo = 'Thanh toán hoá đơn';
@@ -252,9 +252,7 @@ class PaymentController extends Controller
                     return response()->json([
                         'data' => $returnData
                     ]);
-                }
-    
-                
+                } 
             }
             else{
                 $ji = 0;

@@ -24,6 +24,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
     ],
  
     'providers' => [
@@ -32,10 +38,11 @@ return [
             'model' => App\Models\taikhoan::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
     ],
  
 

@@ -38,15 +38,14 @@ class LoginController extends Controller
                 'ROLE' => $request->role,
                 'AdminVerify' => $request->AdminVerify,
             ]);
- 
- 
+            
             $taikhoan->sendEmailVerificationNotification();
-            $token = $taikhoan->createToken($taikhoan->email.'_Token')->plainTextToken;
+            // $token = $taikhoan->createToken($taikhoan->email.'_Token')->plainTextToken;
 
             return response()->json([
                 'status' => 200,
                 'email' => $taikhoan->email,
-                'token' => $token,
+                // 'token' => $token,
                 'massage' => 'Registered Successfully',
             ]);
         }
@@ -125,8 +124,7 @@ class LoginController extends Controller
                         'validation_errors' =>$data,
                     ]);
                 } 
-                $token = $taikhoan->createToken($taikhoan->email.'_Token')->plainTextToken;
-                    
+                $token = $taikhoan->createToken($taikhoan->EMAIL)->plainTextToken; 
                     return response()->json([
                         'status' =>200,
                         'email' =>$taikhoan->EMAIL,
@@ -140,6 +138,7 @@ class LoginController extends Controller
             } 
         } 
     }
+
     public function logout() { 
         Auth::user()->tokens()->delete();
         return response()->json([
@@ -147,6 +146,7 @@ class LoginController extends Controller
             'message'=>'Logged out Successfully',
         ]);
     }
+
     public function sendMailRecoverPassword(Request $request) {
         $email = $request->email;
         $taikhoan = taikhoan::where('email', $request->email)->first();

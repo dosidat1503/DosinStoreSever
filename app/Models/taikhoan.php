@@ -19,15 +19,24 @@ class taikhoan extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'ten',
-        'email',
-        'password',
+        'email', 
         'GIOITINH',
         'SDT',
         'DIACHI',
+        'password',
         'ROLE',
         'AdminVerify',
     ];
     
- 
+    
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
  
 }
