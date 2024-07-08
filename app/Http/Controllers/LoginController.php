@@ -124,16 +124,23 @@ class LoginController extends Controller
                         'validation_errors' =>$data,
                     ]);
                 } 
-                $token = $taikhoan->createToken($taikhoan->EMAIL)->plainTextToken; 
-                    return response()->json([
-                        'status' =>200,
-                        'email' =>$taikhoan->EMAIL,
-                        'matk' => $taikhoan->MATK,
-                        'role' => $taikhoan->ROLE,
-                        'token' => $token,
-                        'message' =>'Logged In Successfully',
-                        // 'role'=>$role,
-                    ]);
+
+                if($taikhoan->ROLE == "Admin")
+                    $token = $taikhoan->createToken($taikhoan->EMAIL, ["nhanvien", "admin"])->plainTextToken;
+                else if($taikhoan->ROLE == "Nhân viên")
+                    $token = $taikhoan->createToken($taikhoan->EMAIL, ["nhanvien"])->plainTextToken;
+                else 
+                    $token = $taikhoan->createToken($taikhoan->EMAIL)->plainTextToken;
+                
+                return response()->json([
+                    'status' =>200,
+                    'email' =>$taikhoan->EMAIL,
+                    'matk' => $taikhoan->MATK,
+                    'role' => $taikhoan->ROLE,
+                    'token' => $token,
+                    'message' =>'Logged In Successfully',
+                    // 'role'=>$role,
+                ]);
                 // }
             } 
         } 

@@ -12,7 +12,7 @@ class HomeController extends Controller
             "SELECT * FROM sanphams, hinhanhsanphams 
             WHERE hinhanhsanphams.masp = sanphams.masp 
             AND MAHINHANH LIKE '%thumnail%'  
-            ORDER BY created_at ASC 
+            ORDER BY created_at DESC 
             LIMIT 15"
         );
         $dataHotProduct = DB::select(

@@ -107,48 +107,53 @@ Route::get('getInfoCollection', [CollectionController::class, 'getInfoCollection
 
 
 Route::middleware(['auth:sanctum'])->group(function() {
+    Route::middleware('abilities:admin')->group(function() { 
+
+        //Admin - ManageAccountStaff 
+        Route::get('getQuantityAccountStaffToDevidePage', [ManageAccountStaff::class, 'getQuantityAccountStaffToDevidePage']);
+        Route::get('getInfoManageAccountStaff', [ManageAccountStaff::class, 'getInfoManageAccountStaff']);
+        Route::post('deleteAccountStaff', [ManageAccountStaff::class, 'deleteAccountStaff']);
+        Route::post('updateStatusOfAccountStaff', [ManageAccountStaff::class, 'updateStatusOfAccountStaff']);
+        Route::get('searchAccountStaff', [ManageAccountStaff::class, 'searchAccountStaff']);
+
+        //Admin - ManageAccountCustomer 
+        Route::get('getQuantityAccountCustomerToDevidePage', [ManageAccountCustomerController::class, 'getQuantityAccountCustomerToDevidePage']);
+        Route::get('getInfoManageAccountCustomer', [ManageAccountCustomerController::class, 'getInfoManageAccountCustomer']);
+        Route::get('searchAccountCustomer', [ManageAccountCustomerController::class, 'searchAccountCustomer']);
+
+    });
+
+    Route::middleware(['abilities:nhanvien', 'abilities:admin'])->group(function() {
+        
+        //Admin - AddProduct
+        Route::post('addProduct', [AddProductController::class, 'addProduct']);
     
-    //Admin - AddProduct
-    Route::post('addProduct', [AddProductController::class, 'addProduct']);
+        //Admin - ManageOrder
+        Route::get('getInfoManageOrder', [AdminManageOrderController::class, 'getInfoManageOrder']);
+        Route::get('infoOrderDetail', [AdminManageOrderController::class, 'infoOrderDetail']);
+        Route::get('infoOrderDetail_Many', [AdminManageOrderController::class, 'infoOrderDetail_Many']);
+        Route::post('saveNote', [AdminManageOrderController::class, 'saveNote']);
+        Route::post('updateOrderStatus', [AdminManageOrderController::class, 'updateOrderStatus']);
 
+        //Admin - ManageProduct
+        Route::post('deleteProduct', [ManageProductController::class, 'deleteProduct']);
 
-    //Admin - ManageOrder
-    Route::get('getInfoManageOrder', [AdminManageOrderController::class, 'getInfoManageOrder']);
-    Route::get('infoOrderDetail', [AdminManageOrderController::class, 'infoOrderDetail']);
-    Route::get('infoOrderDetail_Many', [AdminManageOrderController::class, 'infoOrderDetail_Many']);
-    Route::post('saveNote', [AdminManageOrderController::class, 'saveNote']);
-    Route::post('updateOrderStatus', [AdminManageOrderController::class, 'updateOrderStatus']);
+        //Admin - UpdateProduct
+        Route::post('updateProduct', [UpdateProductController::class, 'updateProduct']);
+        Route::post('updateProduct2', [UpdateProductController::class, 'updateProduct2']);
+        
+        
+        //Admin - Voucher
+        Route::post('addVoucher', [VoucherController::class, 'addVoucher']);
+        Route::get('getQuantityVoucherToDevidePage', [VoucherController::class, 'getQuantityVoucherToDevidePage']);
+        Route::get('getQuantityVoucherToDevidePageSearch', [VoucherController::class, 'getQuantityVoucherToDevidePageSearch']);
+        Route::get('getInfoManageVoucher', [VoucherController::class, 'getInfoManageVoucher']);
+        Route::get('infoVoucherDetail', [VoucherController::class, 'infoVoucherDetail']);
+        Route::post('updateVoucher', [VoucherController::class, 'updateVoucher']);
+        Route::get('getInfoSearchVoucher', [VoucherController::class, 'getInfoSearchVoucher']);
+        Route::post('deleteVoucher', [VoucherController::class, 'deleteVoucher']);
+    });
 
-    //Admin - ManageProduct
-    Route::post('deleteProduct', [ManageProductController::class, 'deleteProduct']);
-
-    //Admin - UpdateProduct
-    Route::post('updateProduct', [UpdateProductController::class, 'updateProduct']);
-    Route::post('updateProduct2', [UpdateProductController::class, 'updateProduct2']);
-    
-
-    //Admin - ManageAccountStaff 
-    Route::get('getQuantityAccountStaffToDevidePage', [ManageAccountStaff::class, 'getQuantityAccountStaffToDevidePage']);
-    Route::get('getInfoManageAccountStaff', [ManageAccountStaff::class, 'getInfoManageAccountStaff']);
-    Route::post('deleteAccountStaff', [ManageAccountStaff::class, 'deleteAccountStaff']);
-    Route::post('updateStatusOfAccountStaff', [ManageAccountStaff::class, 'updateStatusOfAccountStaff']);
-    Route::get('searchAccountStaff', [ManageAccountStaff::class, 'searchAccountStaff']);
-
-    //Admin - ManageAccountCustomer 
-    Route::get('getQuantityAccountCustomerToDevidePage', [ManageAccountCustomerController::class, 'getQuantityAccountCustomerToDevidePage']);
-    Route::get('getInfoManageAccountCustomer', [ManageAccountCustomerController::class, 'getInfoManageAccountCustomer']);
-    Route::get('searchAccountCustomer', [ManageAccountCustomerController::class, 'searchAccountCustomer']);
-
-    
-    //Admin - Voucher
-    Route::post('addVoucher', [VoucherController::class, 'addVoucher']);
-    Route::get('getQuantityVoucherToDevidePage', [VoucherController::class, 'getQuantityVoucherToDevidePage']);
-    Route::get('getQuantityVoucherToDevidePageSearch', [VoucherController::class, 'getQuantityVoucherToDevidePageSearch']);
-    Route::get('getInfoManageVoucher', [VoucherController::class, 'getInfoManageVoucher']);
-    Route::get('infoVoucherDetail', [VoucherController::class, 'infoVoucherDetail']);
-    Route::post('updateVoucher', [VoucherController::class, 'updateVoucher']);
-    Route::get('getInfoSearchVoucher', [VoucherController::class, 'getInfoSearchVoucher']);
-    Route::post('deleteVoucher', [VoucherController::class, 'deleteVoucher']);
 });
 
 //Admin - AddProduct
@@ -178,9 +183,7 @@ Route::get('infoProductDetail', [ManageProductController::class, 'infoProductDet
 //Admin - SearchProduct
 Route::get('getInfoSearchProductAdmin', [ManageProductController::class, 'getInfoSearchProductAdmin']);
 Route::get('getQuantityProductToDevidePage_SearchProductAdmin', [ManageProductController::class, 'getQuantityProductToDevidePage_SearchProductAdmin']);
-  
-
-
+ 
 
 //Admin - Statistic
 Route::get('statisticRevenue', [StatisticController::class, 'statisticRevenue']);
