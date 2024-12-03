@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
  
 class CartController extends Controller
 {
-    public function infoCart(Request $request){
+    public function cartInfo(Request $request){
         $matk = $request->input('matk');
         $data_sanpham = DB::select(
             "SELECT MATK, sanphams.MASP, TENSP, TONGGIA, SOLUONG, TENMAU, 
@@ -48,7 +48,7 @@ class CartController extends Controller
         ]);
     }
 
-    public function updateQuantityProperty(Request $request){
+    public function updateQuantityProductInCart(Request $request){
         $matk = $request->input('matk');
         $mamau = $request->input('mamau');
         $masize = $request->input('masize');

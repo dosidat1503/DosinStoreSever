@@ -15,7 +15,7 @@ use stdClass;
 
 class LoginController extends Controller
 {
-    public function register(Request $request){
+    public function signUp(Request $request){
         $Validator = Validator::make($request->all(), [
             'name' => 'required|max:191',
             'email' => 'required|email:191|unique:taikhoans',
@@ -36,17 +36,13 @@ class LoginController extends Controller
                 'GIOITINH' => $request->gender,
                 'password' =>Hash::make($request->password),
                 'ROLE' => $request->role,
-                'AdminVerify' => $request->AdminVerify,
+                'AdminVerify' => $request->adminVerify,
             ]);
             
-            $taikhoan->sendEmailVerificationNotification();
-            // $token = $taikhoan->createToken($taikhoan->email.'_Token')->plainTextToken;
+            $taikhoan->sendEmailVerificationNotification(); 
 
             return response()->json([
-                'status' => 200,
-                'email' => $taikhoan->email,
-                // 'token' => $token,
-                'massage' => 'Registered Successfully',
+                'status' => 200, 
             ]);
         }
     }
@@ -75,7 +71,7 @@ class LoginController extends Controller
         return response()->json(['message' => 'Email verified'], 200);
     }
 
-    public function login(Request $request){ 
+    public function signIn(Request $request){ 
         $taikhoan = taikhoan::where('email', $request->email)->first();   
 
         $validator = Validator::make($request->all(), [
@@ -93,7 +89,7 @@ class LoginController extends Controller
         {
             if(!$taikhoan) { 
                 $data = new stdClass();
-                $data->email = "Email không tồn tại"; 
+                $data = "Email không tồn tại"; 
                 return response()->json([
                     'status'=>401,
                     'validation_errors' => $data,
@@ -101,27 +97,27 @@ class LoginController extends Controller
             }
             else if(!Hash::check($request->password,$taikhoan->PASSWORD)){
                 $data = new stdClass();
-                $data->password = "Mật khẩu sai";
+                $data = "Mật khẩu sai";
                 return response()->json([
                     'status'=>401,
-                    'validation_errors' =>$data,
+                    'validation_errors' => $data,
                 ]);
             }
             else { 
                 if (is_null($taikhoan->email_verified_at)) { 
                     $data = new stdClass();
-                    $data->password = "tài khoản chưa được xác nhận";
+                    $data = "Tài khoản chưa được xác nhận";
                     return response()->json([
                         'status'=>401,
-                        'validation_errors' =>$data,
+                        'validation_errors' => $data,
                     ]);
                 }  
                 if ($taikhoan->AdminVerify == 0 && $taikhoan->ROLE == "Nhân viên") { 
                     $data = new stdClass();
-                    $data->password = "tài khoản chưa được Admin xác nhận";
+                    $data = "Tài khoản chưa được Admin xác nhận";
                     return response()->json([
                         'status'=>401,
-                        'validation_errors' =>$data,
+                        'validation_errors' => $data,
                     ]);
                 } 
 
@@ -138,10 +134,8 @@ class LoginController extends Controller
                     'matk' => $taikhoan->MATK,
                     'role' => $taikhoan->ROLE,
                     'token' => $token,
-                    'message' =>'Logged In Successfully',
-                    // 'role'=>$role,
-                ]);
-                // }
+                    'message' =>'Logged In Successfully', 
+                ]); 
             } 
         } 
     }
@@ -159,7 +153,7 @@ class LoginController extends Controller
         $taikhoan = taikhoan::where('email', $request->email)->first();
         if (!$taikhoan) { 
             $data = new stdClass();
-            $data->email = "Email không tồn tại"; 
+            $data = "Email không tồn tại"; 
             return response()->json([
                 'status'=>401,
                 'validation_errors' => $data,
@@ -173,8 +167,7 @@ class LoginController extends Controller
             $message->to($email);
         });
         return response()->json([
-            'status'=>200, 
-
+            'status'=> 200,  
         ]);  
     }
 }

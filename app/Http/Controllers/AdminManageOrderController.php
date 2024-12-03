@@ -46,7 +46,7 @@ class AdminManageOrderController extends Controller
     public function infoOrderDetail(Request $request){
         $madh = $request->query('madh');
         
-        $data_relative_Donhang =  DB::select(
+        $relate_order =  DB::select(
             "SELECT donhangs.MADH, thongtingiaohangs.TEN, SDT, DIACHI, 
             TINH_TP, QUAN_HUYEN, PHUONG_XA, TONGTIEN, TONGTIEN_SP,
             VOUCHERGIAM, TONGTIENDONHANG, HINHTHUC_THANHTOAN, TRANGTHAI_THANHTOAN, 
@@ -55,7 +55,7 @@ class AdminManageOrderController extends Controller
             where donhangs.MADH = $madh  AND donhangs.MADH = chitiet_donhangs.MADH 
             AND thongtingiaohangs.MATTGH = donhangs.MATTGH"
         );
-        $data_sanPham_relative_CTDH = DB::select(
+        $relate_order_detail = DB::select(
             "SELECT sanphams.MASP, TENSP, GIABAN, TENMAU, HEX, MASIZE, TONGTIEN, chitiet_donhangs.SOLUONG, imgURL, sanpham_mausac_sizes.MAXDSP  
             from mausacs, chitiet_donhangs, sanphams, sanpham_mausac_sizes, hinhanhsanphams
             where chitiet_donhangs.MADH = $madh AND chitiet_donhangs.MAXDSP = sanpham_mausac_sizes.MAXDSP 
@@ -65,12 +65,12 @@ class AdminManageOrderController extends Controller
 
         
 
-        foreach ($data_relative_Donhang as $order) {
+        foreach ($relate_order as $order) {
             $order->NGAYORDER = Carbon::parse($order->NGAYORDER)->format('d/m/Y');
         }
         return response()->json([
-            'data_relative_Donhang' => $data_relative_Donhang,
-            'data_sanPham_relative_CTDH' => $data_sanPham_relative_CTDH,
+            'relate_order' => $relate_order,
+            'relate_order_detail' => $relate_order_detail,
             'ok'=> "ok"
         ]);
     }

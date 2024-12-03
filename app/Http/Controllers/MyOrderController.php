@@ -17,7 +17,7 @@ class MyOrderController extends Controller
         // $orderList_DB = donhang::where('TRANGTHAI_DONHANG', 'LIKE', "%$tenTrangThai%")->orderBy('MADH', 'desc')
         // ->skip($start)->take($numberOrderEachPage)->get(); 
 
-        $orderList_DB = DB::select(
+        $orderList = DB::select(
             "SELECT donhangs.MADH, TEN, SDT, DIACHI, TINH_TP, QUAN_HUYEN, PHUONG_XA, DANGSUDUNG, NGAYORDER,
             TRANGTHAI_THANHTOAN, HINHTHUC_THANHTOAN, TONGTIENDONHANG, TONGTIEN_SP
             FROM donhangs, thongtingiaohangs 
@@ -28,12 +28,12 @@ class MyOrderController extends Controller
             LIMIT $start, $numberOrderEachPage"
         );
 
-        foreach ($orderList_DB as $order) {
+        foreach ($orderList as $order) {
             $order->NGAYORDER = Carbon::parse($order->NGAYORDER)->format('d/m/Y');
         }
 
         return response()->json([
-            'orderList_DB' => $orderList_DB, 
+            'orderList' => $orderList, 
         ]);
     }
     public function infoOrderDetail_myOder(Request $request){

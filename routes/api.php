@@ -25,6 +25,8 @@ use App\Http\Controllers\ReviewProduct;
 use App\Http\Controllers\SetDataController;
 use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,10 +43,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 }); 
 //Login
-Route::post('register', [LoginController::class, 'register']);
+Route::post('signUp', [LoginController::class, 'signUp']);
 Route::get('/email/verify/{id}/{hash}', [LoginController::class, 'verify']) 
 ->middleware(['signed'])->name('verification.verify');
-Route::post('login', [LoginController::class, 'login']);
+Route::post('signIn', [LoginController::class, 'signIn']);
 Route::post('sendMailRecoverPassword', [LoginController::class, 'sendMailRecoverPassword']);
 
 //AdminLogin
@@ -56,26 +58,26 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::post('logout', [LoginController::class, 'logout']); 
 
     Route::post('addToCart', [InfoProductController::class, 'addToCart']);
-    Route::post('updateQuantityProductInCart', [InfoProductController::class, 'updateQuantityProductInCart']);
+    // Route::post('updateQuantityProductInCart', [InfoProductController::class, 'updateQuantityProductInCart'])->withoutMiddleware([VerifyCsrfToken::class, ConvertEmptyStringsToNull::class]);
     
     //Cart
-    Route::get('infoCart', [CartController::class, 'infoCart']);
+    Route::get('cartInfo', [CartController::class, 'cartInfo']);
     Route::post('updateSelectedProperty', [CartController::class, 'updateSelectedProperty']);
     Route::post('deleteItemCart', [CartController::class, 'deleteItemCart']);
-    Route::post('updateQuantityProperty', [CartController::class, 'updateQuantityProperty']);
+    Route::post('updateQuantityProductInCart', [CartController::class, 'updateQuantityProductInCart']);
 
 
     //Payment + Payment Online VNPAY
     Route::get('infoForPayment', [PaymentController::class, 'infoForPayment']);
-    Route::post('saveInfoForPayment', [PaymentController::class, 'saveInfoForPayment']);
+    Route::post('saveOrderInfo', [PaymentController::class, 'saveOrderInfo']);
     Route::post('payOnline', [PayOnlineController::class, 'payOnline']);
     
     //Payment Result
     Route::post('processPaymentResult', [PaymentController::class, 'processPaymentResult']);
 
     //Info Account
-    Route::get('getInfoAccount', [InfoAccountController::class, 'getInfoAccount']);
-    Route::post('saveInfoAccount', [InfoAccountController::class, 'saveInfoAccount']);
+    Route::get('getAccountInfo', [InfoAccountController::class, 'getAccountInfo']);
+    Route::post('saveAccountInfo', [InfoAccountController::class, 'saveAccountInfo']);
     Route::post('changePassword', [InfoAccountController::class, 'changePassword']);
 
     //MyOrder 
@@ -90,20 +92,20 @@ Route::middleware(['auth:sanctum'])->group(function() {
  
 
 //Home
-Route::get('getInfoAtStartLoadingHome', [HomeController::class, 'getInfoAtStartLoadingHome']);
+Route::get('getProductAtHome', [HomeController::class, 'getProductAtHome']);
 
 //Search Product
 Route::get('search', [SearchProductController::class, 'search']);
 Route::get('filterSearchProduct', [SearchProductController::class, 'filterSearchProduct']);
  
 //InfoProduct
-Route::get('infoProduct', [InfoProductController::class, 'infoProduct']);
-Route::get('getInfoReviewProduct', [InfoProductController::class, 'getInfoReviewProduct']);
+Route::get('productDetail', [InfoProductController::class, 'productDetail']);
+Route::get('getProductReviews', [InfoProductController::class, 'getProductReviews']);
 Route::get('getRelativeProduct', [InfoProductController::class, 'getRelativeProduct']); 
 
 //Collection
 Route::get('getQuantityCollectionToDevidePage', [CollectionController::class, 'getQuantityCollectionToDevidePage']);
-Route::get('getInfoCollection', [CollectionController::class, 'getInfoCollection']);
+Route::get('getProductCollection', [CollectionController::class, 'getProductCollection']);
 
 
 Route::middleware(['auth:sanctum'])->group(function() {
@@ -161,7 +163,7 @@ Route::post('addProduct', [AddProductController::class, 'addProduct']);
 Route::get('getInfoForAddProduct', [AddProductController::class, 'getInfoForAddProduct']);
 Route::get('linkImageProduct', [AddProductController::class, 'linkImageProduct']);
 Route::get('updateQuantity', [AddProductController::class, 'updateQuantity']);
-Route::get('getDetailCategory2', [AddProductController::class, 'getDetailCategory2']);
+Route::get('getCategory', [AddProductController::class, 'getCategory']);
  
 //Admin - ManageOrder
 Route::get('getQuantityOrderToDevidePage', [AdminManageOrderController::class, 'getQuantityOrderToDevidePage']);

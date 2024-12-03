@@ -20,15 +20,15 @@ use stdClass;
 
 class InfoAccountController extends Controller
 {
-    public function getInfoAccount(Request $request){
+    public function getAccountInfo(Request $request){
         $matk = $request->input('matk');
-        $infoAccount = DB::select("SELECT TEN, gioitinh, EMAIL, SDT, DIACHI FROM taikhoans WHERE MATK = ?", [$matk]);
+        $accountInfo = DB::select("SELECT TEN, gioitinh, EMAIL, SDT, DIACHI FROM taikhoans WHERE MATK = ?", [$matk]);
 
         return response()->json([
-            'infoAccount' => $infoAccount[0],
+            'accountInfo' => $accountInfo[0],
         ]);
     }
-    public function saveInfoAccount(Request $request){
+    public function saveAccountInfo(Request $request){
         $name = $request->name;
         $gioitinh = $request->gender;
         $numberPhone = $request->numberPhone;

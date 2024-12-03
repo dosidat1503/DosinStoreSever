@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class CollectionController extends Controller
 {
     public function getQuantityCollectionToDevidePage(Request $request){ 
-        $mapl_sp = $request->mapl_sp; 
+        $fashionType = $request->fashionType; 
         $mapl_sp2 = $request->mapl_sp2;
         $query_data = $request->query_data;
         $quantity = 0;
@@ -16,7 +16,7 @@ class CollectionController extends Controller
             $quantity = DB::select(
                 "SELECT COUNT(MASP) AS SL_MASP, MAPL_SP
                 FROM sanphams
-                WHERE MAPL_SP = $mapl_sp
+                WHERE MAPL_SP = $fashionType
                 AND MAPL_SP2 = $mapl_sp2
                 GROUP BY MAPL_SP"
             ); 
@@ -33,21 +33,20 @@ class CollectionController extends Controller
             'quantity'=> $quantity, 
         ]); 
     }
-    public function getInfoCollection(Request $request){
-        $collection = $request->input('collection');
+    public function getProductCollection(Request $request){ 
         $start = $request->input('start');
-        $numberOrderEachPage = $request->input('numberOrderEachPage');
-        $mapl_sp = $request->input('mapl_sp');
-        $mapl_sp2 = $request->input('mapl_sp2');
-        $filter = $request->input('filter');
+        $numberProductEachPage = $request->input('numberProductEachPage');
+        $fashionType = $request->input('fashionType');
+        $category = $request->input('category');
+        $sortBy = $request->input('sortBy');
         $query_data = $request->query_data;
         $quantity = 0;
   
-        $orderList_DB = [];    
+        $productList = [];    
         $data_queryOrMAPL = "";
         if($query_data == null){
-            $data_queryOrMAPL =  "AND MAPL_SP = $mapl_sp
-                                AND MAPL_SP2 = $mapl_sp2"; 
+            $data_queryOrMAPL =  "AND MAPL_SP = $fashionType
+                                AND MAPL_SP2 = $category"; 
         }
         else{
             $data_queryOrMAPL =  "AND TENSP LIKE '%$query_data%'"; 
@@ -58,14 +57,14 @@ class CollectionController extends Controller
             AND MAHINHANH LIKE '%thumnail%'  
             $data_queryOrMAPL";
         
-        $data_query2 = "LIMIT $start, $numberOrderEachPage";
+        $data_query2 = "LIMIT $start, $numberProductEachPage";
 
-        if($filter == 'moinhat'){
-            // $orderList_DB = DB::select("SELECT * from sanphams where TENSP LIKE '%$tensp%' ORDER BY created_at DESC");
-            $orderList_DB = DB::select("$data_query ORDER BY created_at DESC $data_query2"); 
+        if($sortBy == 'moinhat'){
+            // $productList = DB::select("SELECT * from sanphams where TENSP LIKE '%$tensp%' ORDER BY created_at DESC");
+            $productList = DB::select("$data_query ORDER BY created_at DESC $data_query2"); 
         }
-        else if($filter == 'banchay'){ 
-            $orderList_DB_GetQuantity = DB::select( 
+        else if($sortBy == 'banchay'){ 
+            $productList_GetQuantity = DB::select( 
                 "SELECT sanphams.MASP, TENSP, GIAGOC, GIABAN, imgURL
                 from chitiet_donhangs, sanphams, hinhanhsanphams, sanpham_mausac_sizes
                 where chitiet_donhangs.MAXDSP = sanpham_mausac_sizes.MAXDSP 
@@ -76,7 +75,7 @@ class CollectionController extends Controller
                 group by sanphams.MASP, TENSP, GIAGOC, GIABAN, imgURL
                 order by SUM(chitiet_donhangs.SOLUONG) DESC"
             ); 
-            $orderList_DB = DB::select( 
+            $productList = DB::select( 
                 "SELECT sanphams.MASP, TENSP, GIAGOC, GIABAN, imgURL
                 from chitiet_donhangs, sanphams, hinhanhsanphams, sanpham_mausac_sizes
                 where chitiet_donhangs.MAXDSP = sanpham_mausac_sizes.MAXDSP 
@@ -90,16 +89,16 @@ class CollectionController extends Controller
             ); 
             $quantity = [
                 [
-                    'SL_MASP' => count($orderList_DB_GetQuantity),
-                    'MAPL_SP' => $mapl_sp
+                    'SL_MASP' => count($productList_GetQuantity),
+                    'MAPL_SP' => $fashionType
                 ]
             ];
         }
-        else if($filter == 'thapDenCao'){
-            $orderList_DB = DB::select("$data_query ORDER BY GIABAN ASC $data_query2");
+        else if($sortBy == 'thapDenCao'){
+            $productList = DB::select("$data_query ORDER BY GIABAN ASC $data_query2");
         }
-        else if($filter == 'caoDenThap'){
-            $orderList_DB = DB::select("$data_query ORDER BY GIABAN DESC $data_query2");
+        else if($sortBy == 'caoDenThap'){
+            $productList = DB::select("$data_query ORDER BY GIABAN DESC $data_query2");
         } 
 
         
@@ -107,8 +106,8 @@ class CollectionController extends Controller
             $quantity = DB::select(
                 "SELECT COUNT(MASP) AS SL_MASP, MAPL_SP
                 FROM sanphams
-                WHERE MAPL_SP = $mapl_sp
-                AND MAPL_SP2 = $mapl_sp2
+                WHERE MAPL_SP = $fashionType
+                AND MAPL_SP2 = $category
                 GROUP BY MAPL_SP"
             ); 
         }
@@ -121,7 +120,7 @@ class CollectionController extends Controller
         }
 
         return response()->json([
-            'orderList_DB' => $orderList_DB, 
+            'productList' => $productList, 
             'quantity' => $quantity,
         ]);
     }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function getInfoAtStartLoadingHome(){
+    public function getProductAtHome(){
         $dataNewProduct = DB::select(
             "SELECT * FROM sanphams, hinhanhsanphams 
             WHERE hinhanhsanphams.masp = sanphams.masp 

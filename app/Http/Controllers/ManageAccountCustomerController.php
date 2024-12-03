@@ -45,9 +45,7 @@ class ManageAccountCustomerController extends Controller
         $start = $request->query('start');
         $numberOrderEachPage = $request->query('numberOrderEachPage');
         $keySearch = $request->query('keySearch');
-        $typeSearch = $request->query('typeSearch');
-
-         
+        $typeSearch = $request->query('typeSearch'); 
 
         $data_thongtin_sanpham = DB::select(
             "SELECT EMAIL, TEN, GIOITINH, SDT, taikhoans.MATK, SUM(TONGTIENDONHANG) AS DOANHTHU, COUNT(MADH) AS SOLUONGDONHANG

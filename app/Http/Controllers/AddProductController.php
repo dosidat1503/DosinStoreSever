@@ -107,14 +107,14 @@ class AddProductController extends Controller
             DB::insert("UPDATE hinhanhsanphams");
         }
     }
-    public function getDetailCategory2(Request $request){
-        $typeProduct_mapl = $request->typeProduct_mapl;
-        $listDetailCategory2 = DB::select(
+    public function getCategory(Request $request){
+        $fashionType = $request->fashionType;
+        $categoryList = DB::select(
             "SELECT * from phanloai_sanpham2s 
-            WHERE MAPL1 = $typeProduct_mapl"
+            WHERE MAPL1 = $fashionType"
         );
         return response()->json([
-            'listDetailCategory2' => $listDetailCategory2,
+            'categoryList' => $categoryList,
         ]);
     }
 }

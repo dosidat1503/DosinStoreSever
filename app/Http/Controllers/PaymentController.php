@@ -13,7 +13,7 @@ class PaymentController extends Controller
         $matk = $request->query('matk');
         $clickPaymentFromCart = $request->query('clickPaymentFromCart');
         if($clickPaymentFromCart == 1){
-            $data_sanpham = DB::select(
+            $products = DB::select(
                 "SELECT sanphams.MASP, TENSP, TONGGIA, SOLUONG, TENMAU, 
                 chitiet_giohangs.MASIZE, GIABAN, SELECTED, mausacs.MAMAU, imgURL
                 FROM chitiet_giohangs, sanphams, mausacs, hinhanhsanphams
@@ -25,7 +25,7 @@ class PaymentController extends Controller
             );
         }
         else{
-            $data_sanpham = DB::select(
+            $products = DB::select(
                 "SELECT sanphams.MASP, TENSP, TONGGIA, SOLUONG, TENMAU, 
                 chitiet_giohangs.MASIZE, GIABAN, SELECTED, mausacs.MAMAU, imgURL
                 FROM chitiet_giohangs, sanphams, mausacs, hinhanhsanphams
@@ -38,38 +38,38 @@ class PaymentController extends Controller
         }
 
         $currentDate = Carbon::now()->format('Y-m-d');
-        $data_voucher = DB::select(
+        $vouchers = DB::select(
             "SELECT MAVOUCHER, GIATRIGIAM, GIATRI_GIAM_MAX, PHANLOAI_VOUCHER, GIATRI_DH_MIN, SOLUONG_CONLAI, SOLUONG
             FROM vouchers 
             WHERE THOIGIANBD <= '$currentDate'
             AND THOIGIANKT >= '$currentDate'"
         );
 
-        $data_adress = DB::select("SELECT * FROM thongtingiaohangs where MATK = $matk");
+        $address = DB::select("SELECT * FROM thongtingiaohangs where MATK = $matk");
          
 
         return response()->json([ 
-            'data_sanpham' => $data_sanpham,
-            'data_voucher' => $data_voucher,
-            'data_adress' => $data_adress,  
+            'products' => $products,
+            'vouchers' => $vouchers,
+            'address' => $address,  
         ]);
     }   
-    public function saveInfoForPayment(Request $request){
+    public function saveOrderInfo(Request $request){
         $matk = $request->input('matk');
         $mattgh = $request->input('mattgh');
-        $name_ship = $request->input('name_ship');
-        $numberPhone_ship = $request->input('numberPhone_ship');
-        $address_ship = $request->input('address_ship');
-        $option_thanhpho = $request->input('option_thanhpho');
-        $option_quan = $request->input('option_quan');
-        $option_phuong = $request->input('option_phuong');
+        $name_ship = $request->input('name');
+        $numberPhone_ship = $request->input('numberPhone');
+        $address_ship = $request->input('address');
+        $option_thanhpho = $request->input('city');
+        $option_quan = $request->input('district');
+        $option_phuong = $request->input('ward');
 
         $ngayorder = $request->input('ngayorder');
         $tongtien_sp = $request->input('tongtien_SP');
         $mavoucher = $request->input('mavoucher');
         $vouchergiam = $request->input('vouchergiam'); 
         $tongtiendonhang = $request->input('tongtiendonhang');
-        $phivanchuyen = $request->input('phivanchuyen');
+        $phivanchuyen = $request->input('deliveryFee');
         $hinhthuc_thanhtoan = $request->input('hinhthucthanhtoan');
         $trangthai_thanhtoan = $request->input('trangthaithanhtoan');
         $trangthai_donhang = $request->input('trangthaidonhang');
@@ -79,7 +79,7 @@ class PaymentController extends Controller
         $infoProductJSON = $request->input('infoProductJSON');
         $infoProduct = json_decode($infoProductJSON, true);
         $mattgh_conver = $mattgh;
-        $error_soluong_SP = [];
+        $product_quantity_error = [];
         // $error_soluong_SP_i = 0;
         foreach($infoProduct as $item){
             $kiemtra_sl = DB::select(
@@ -99,10 +99,10 @@ class PaymentController extends Controller
                 $SOLUONGG = $kiemtra_sl[0]->SOLUONG;
                 $MASIZEE = $kiemtra_sl[0]->MASIZE;
                 // $error_soluong_SP_i++
-                $error_soluong_SP[] = "Số lượng của sản phẩm $TENSPP, màu $TENMAUU, size $MASIZEE chỉ còn $SOLUONGG sản phẩm";  
+                $product_quantity_error[] = "Số lượng của sản phẩm $TENSPP, màu $TENMAUU, size $MASIZEE chỉ còn $SOLUONGG sản phẩm";  
             }
         }
-        if(count($error_soluong_SP) == 0){
+        if(count($product_quantity_error) == 0){
             if($mattgh == ''){
                 DB::insert(
                     "INSERT INTO thongtingiaohangs(MATK, TEN, SDT, DIACHI, TINH_TP, QUAN_HUYEN, PHUONG_XA, DANGSUDUNG)
@@ -173,7 +173,7 @@ class PaymentController extends Controller
     
             if($hinhthuc_thanhtoan == "Chuyển khoản"){
                 $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-                $vnp_Returnurl = "http://localhost:3000/paymentResult";
+                $vnp_Returnurl = "http://localhost:5310/paymentResult";
                 $vnp_TmnCode = "NCH1W7SL";//Mã website tại VNPAY 
                 $vnp_HashSecret = "L4MNB0O55ENB6LWCOKW852OWZSWEF3G0"; //Chuỗi bí mật
     
@@ -240,18 +240,16 @@ class PaymentController extends Controller
                     $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//  
                     $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
                 }
-                $returnData = [
+                $returnData=  [
                     'code' => '00'
                     , 'message' => 'success'
-                    , 'data' => $vnp_Url
+                    , 'vnp_Url' => $vnp_Url
                 ];
                 if (isset($_POST['redirect'])) {
                     header('Location: ' . $vnp_Url);
                     die();
                 } else {
-                    return response()->json([
-                        'data' => $returnData
-                    ]);
+                    return response()->json($returnData);
                 } 
             }
             else{
@@ -287,7 +285,7 @@ class PaymentController extends Controller
 
         return response()->json([
             'message' => 200,
-            'error_soluong_SP' => $error_soluong_SP
+            'product_quantity_error' => $product_quantity_error
         ]);
     }
     // public function payOnline(Request $request){

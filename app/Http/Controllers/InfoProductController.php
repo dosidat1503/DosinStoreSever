@@ -14,15 +14,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 use stdClass; 
 
 class InfoProductController extends Controller
 {
-    public function infoProduct(Request $request){
+    public function productDetail(Request $request){
         $id = $request->query('id');
-        $data_sanpham = sanpham::where('MASP', 'LIKE', "%$id%")->get();
-        $data_mausac = DB::select("SELECT * FROM sanpham_mausac_sizes WHERE MASP = '$id' ");
+        $data_sanpham = sanpham::where('MASP', 'LIKE', "%$id%")->first();
+        $data_tungloaisanpham = DB::select("SELECT * FROM sanpham_mausac_sizes WHERE MASP = '$id' ");
         $data_MAMAU = DB::select("SELECT DISTINCT(mausacs.MAMAU), HEX, TENMAU FROM sanpham_mausac_sizes, mausacs WHERE sanpham_mausac_sizes.MAMAU = mausacs.MAMAU AND MASP = '$id' ");
         $data_SIZE = DB::select("SELECT DISTINCT(MASIZE) FROM sanpham_mausac_sizes WHERE MASP = '$id ORDER BY MASIZE DESC'");
         $data_xacDinhSoLuong = DB::select("SELECT MASIZE, MAMAU, SOLUONG FROM SANPHAM_MAUSAC_SIZES WHERE MASP = $id");
@@ -34,11 +35,11 @@ class InfoProductController extends Controller
         );
         return response()->json([
             'data_sanpham' => $data_sanpham,
-            'data_mausac' => $data_mausac,
+            'data_tungloaisanpham' => $data_tungloaisanpham,
             'data_mamau' => $data_MAMAU,
             'data_size' => $data_SIZE,
             'data_xacDinhSoLuong' => $data_xacDinhSoLuong,
-            'dataProductDetail_sanpham_mausac_sizes__hinhanhs' => $dataProductDetail_sanpham_mausac_sizes__hinhanhs,
+            'data_hinhanh' => $dataProductDetail_sanpham_mausac_sizes__hinhanhs,
         ]);
     }
     public function addToCart(Request $request){ 
@@ -47,9 +48,8 @@ class InfoProductController extends Controller
             'MASP' => $request->masp,
             'MASIZE' => $request->masize,
             'MAMAU' => $request->mamau,
-            'SOLUONG' => $request->soluongsp,
-            'TONGGIA' => $request->tonggia,
-
+            'SOLUONG' => $request->soluong,
+            'TONGGIA' => $request->tonggia, 
         ]);
         return response()->json([
             'status_code' => 200,
@@ -78,17 +78,22 @@ class InfoProductController extends Controller
 
         DB::update("UPDATE chitiet_giohangs SET SOLUONG = SOLUONG + $soluong WHERE MATK = '$matk' 
         AND MASP = '$masp' AND MASIZE = '$masize' AND MAMAU = '$mamau'");
+  Log::info('Updated quantity successfully');
+        return response()->json([
+            'status' => 200, 
+            'message' => 'Cập nhật không thành công',
+        ]);
     }
-    public function getInfoReviewProduct(Request $request){
-        $masp = $request->input('masp');
-        $infoReviewProduct = DB::select(
+    public function getProductReviews(Request $request){
+        $masp = strval($request->input('masp'));
+        $productReviews = DB::select(
             "SELECT MADANHGIA, NOIDUNG_DANHGIA, SOLUONG_SAO, TEN 
             FROM danhgia_sanphams, taikhoans
-            WHERE MASP = $masp 
-            AND danhgia_sanphams.MATK = taikhoans.MATK"
+            WHERE MASP = ?
+            AND danhgia_sanphams.MATK = taikhoans.MATK", [$masp]
         );
         return response()->json([
-            'infoReviewProduct' =>  $infoReviewProduct
+            'productReviews' =>  $productReviews
         ]);
     }
     public function getRelativeProduct(Request $request){
