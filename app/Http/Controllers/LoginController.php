@@ -3,7 +3,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\taikhoan;  
+use App\Models\taikhoan;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth; 
@@ -120,20 +121,26 @@ class LoginController extends Controller
                         'validation_errors' => $data,
                     ]);
                 } 
+                $expiresAt = now()->addHour(); 
+                // chưa biết nó sẽ xử lý token thời gian như thế nào nên chưa biết truyền gì vào, có thời gian rảnh thì sẽ mò
 
-                if($taikhoan->ROLE == "Admin")
-                    $token = $taikhoan->createToken($taikhoan->EMAIL, ["nhanvien", "admin"])->plainTextToken;
-                else if($taikhoan->ROLE == "Nhân viên")
-                    $token = $taikhoan->createToken($taikhoan->EMAIL, ["nhanvien"])->plainTextToken;
+                if($taikhoan->ROLE == "Admin"){
+                    $abilities = ["nhanvien", "admin"];
+                    $token = $taikhoan->createToken($taikhoan->EMAIL, $abilities, $expiresAt)->plainTextToken;
+                }
+                else if($taikhoan->ROLE == "Nhân viên"){
+                    $abilities = ["nhanvien"];
+                    $token = $taikhoan->createToken($taikhoan->EMAIL, $abilities, $expiresAt)->plainTextToken;
+                }
                 else 
-                    $token = $taikhoan->createToken($taikhoan->EMAIL)->plainTextToken;
+                    $token = $taikhoan->createToken($taikhoan->EMAIL, ['*'], $expiresAt)->plainTextToken;
                 
                 return response()->json([
                     'status' =>200,
                     'email' =>$taikhoan->EMAIL,
                     'matk' => $taikhoan->MATK,
                     'role' => $taikhoan->ROLE,
-                    'token' => $token,
+                    'access_token' => $token,
                     'message' =>'Logged In Successfully', 
                 ]); 
             } 
@@ -164,7 +171,7 @@ class LoginController extends Controller
         $password_hash = Hash::make($password);
         DB::update("UPDATE taikhoans SET password = '$password_hash' Where EMAIL = '$email'");
         Mail::send('mailRecoverPassword', ['password' => $password], function($message) use ($email){
-            $message->to($email);
+            $message->to($email)->subject('Khôi phục mật khẩu'); 
         });
         return response()->json([
             'status'=> 200,  
