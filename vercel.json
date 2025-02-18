@@ -1,28 +1,44 @@
 {
     "version": 2,
-      "framework": null,
+    "framework": null,
     "functions": {
         "api/index.php": { "runtime": "vercel-php@0.6.0" }
     },
-    "routes": [{
-        "src": "/(.*)",
-        "dest": "/api/index.php"
-    }],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_URL": "https://yourprojectdomain.com",
         "APP_KEY": "base64:CnHIYDAjtpFgr9tQgbz8Z5sRjIwweLhDhltuBOULF4Y=",
-
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
         "VIEW_COMPILED_PATH": "/tmp",
-
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+
+        "DB_CONNECTION": "mysql",
+        "DB_HOST": "54.153.222.4",
+        "DB_PORT": "3306",
+        "DB_DATABASE": "project_laravel",
+        "DB_USERNAME": "root",
+        "DB_PASSWORD": "root",
+
+        "MAIL_MAILER": "smtp",
+        "MAIL_HOST": "smtp.gmail.com",
+        "MAIL_PORT": "587",
+        "MAIL_USERNAME": "dosidat15031712@gmail.com",
+        "MAIL_PASSWORD": "pzjjrfcysfotwjrv",
+        "MAIL_ENCRYPTION": "tls",
+        "MAIL_FROM_ADDRESS": "dosidat15031712@gmail.com",
+        "MAIL_FROM_NAME": "CNPM"
     }
 }
