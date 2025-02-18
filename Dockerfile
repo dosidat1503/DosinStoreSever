@@ -39,9 +39,9 @@ RUN chown -R www-data:www-data /var/www \
 # Kích hoạt module Apache mod_rewrite (yêu cầu cho Laravel)
 RUN a2enmod rewrite
 
-# Copy file cấu hình Apache (nếu cần)
-# Nếu bạn có một file cấu hình Apache (vd: laravel.conf), bạn có thể copy nó vào container:
-# COPY ./laravel.conf /etc/apache2/sites-available/000-default.conf
+# Thêm file cấu hình Apache cho Laravel
+COPY ./laravel.conf /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default.conf
 
 # Expose port 80 cho Apache
 EXPOSE 80
