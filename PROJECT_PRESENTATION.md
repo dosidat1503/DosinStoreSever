@@ -10,22 +10,6 @@ A comprehensive e-commerce web application developed for IS207.O13 course, featu
 - **Framework**: Laravel 10.x (PHP 8.1+)
 - **Database**: MySQL 8.0
 - **Authentication**: Laravel Sanctum
-- **Testing**: PHPUnit
-
-### **Frontend**
-- **Framework**: React 18.2.0
-- **UI Libraries**: 
-  - Material-UI (@mui/material)
-  - Bootstrap 5.3.2
-  - FontAwesome Icons
-- **Charts**: Chart.js, Recharts
-- **Routing**: React Router DOM 6.x
-
-### **DevOps & Deployment**
-- **Containerization**: Docker & Docker Compose
-- **Web Server**: Nginx
-- **Cloud Deployment**: Vercel
-- **Development Tools**: Vite, ESLint
 
 ## ✨ KEY FEATURES
 
@@ -94,21 +78,6 @@ The system includes **20+ optimized database tables**:
 - **CSRF Protection**: Cross-site request forgery prevention
 - **Data Validation**: Comprehensive input validation
 
-## 📱 RESPONSIVE DESIGN
-
-- **Mobile-First Approach**: Optimized for mobile devices
-- **Bootstrap Grid System**: Responsive layout
-- **Modern UI/UX**: Contemporary, user-friendly interface
-- **Loading States**: Smooth user experience
-
-## 🚀 PERFORMANCE & OPTIMIZATION
-
-- **Database Optimization**: Optimized indexes and relationships
-- **API Efficiency**: RESTful API design
-- **Code Splitting**: React lazy loading
-- **Image Optimization**: Efficient image management
-- **Caching Strategy**: Laravel caching mechanisms
-
 ## 📊 ADVANCED FEATURES
 
 ### **Analytics & Reporting**
@@ -137,15 +106,6 @@ The system includes **20+ optimized database tables**:
 - **API Documentation**: Well-organized RESTful API with 50+ endpoints
 - **Database Seeding**: Sample data for testing
 - **Error Handling**: Comprehensive error management
-
-## 📈 TECHNICAL ACHIEVEMENTS
-
-1. **Fullstack Development**: Proficiency in both Frontend (React) and Backend (Laravel)
-2. **Complex Database Design**: 20+ table database with normalized relationships
-3. **API Development**: RESTful API with comprehensive endpoint coverage
-4. **Modern Frontend**: React with hooks, context, and modern UI libraries
-5. **DevOps Skills**: Docker containerization and deployment automation
-6. **Security Implementation**: Authentication, authorization, and data protection
 
 ## 💡 PROJECT IMPACT
 
